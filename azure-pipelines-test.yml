@@ -1,0 +1,42 @@
+name: Playwright Tests
+
+trigger:
+  branches:
+    include:
+      - playwright*
+  # paths:
+  #   include:
+  #   - 
+
+pool:
+  name: Default
+
+jobs:
+  - job: Tests
+    timeoutInMinutes: 30
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "16.x"
+        displayName: "Install Node.js"
+      - script: |
+          npm ci
+        workingDirectory: $(System.DefaultWorkingDirectory)/
+        displayName: "Install dependencies"
+      - script: |
+          npx playwright install --with-deps
+        workingDirectory: $(System.DefaultWorkingDirectory)/
+        displayName: "Install Playwright Browsers"
+      - script: |
+          npm run test
+        workingDirectory: $(System.DefaultWorkingDirectory)/
+        displayName: "Run Playwright tests"
+        env:
+          CI: "true"
+          ENV: "test"
+          USER: $(USER)
+          PWD: $(PWD)
+      - publish: $(System.DefaultWorkingDirectory)/playwright-report
+        artifact: playwright-report
+        # always create the artifact, this is useful for debugging failed tests
+        condition: always()
