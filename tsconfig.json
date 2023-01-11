@@ -1,8 +1,13 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "strict": false,
         "moduleResolution": "node",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "paths": {
+            "pages/*": ["pages/*"],
+            "tests/*": ["tests/*"]
+        }
     },
     "exclude": ["node_modules"]
 }
